@@ -1,6 +1,4 @@
-
-(function () {
-
+(function() {
   'use strict';
 
   const handlebars = require('handlebars');
@@ -10,20 +8,30 @@
   const npmRun = require('npm-run');
   const path = require('path');
 
-  const basePath = path.join(__dirname, '..', '..');
+  let basePath = '';
 
   function generateReport(config, done) {
+    basePath = config.basePath;
+
     let data = {};
     let fileListWithErrorCountArray = [];
     let fileListWithErrorCount = {};
 
-    let cliArguments = ' --config "' + config.tslint + '"' +
+    let cliArguments =
+      ' --config "' +
+      config.tslint +
+      '"' +
       ' --format json' +
-      ' --out "' + config.jsonReport + '"' +
-      ' "' + config.srcFiles + '"' + ' --force';
+      ' --out "' +
+      config.jsonReport +
+      '"' +
+      ' "' +
+      config.srcFiles +
+      '"' +
+      ' --force';
 
     if (config.exclude.length > 0) {
-      config.exclude.forEach(function (excludePath) {
+      config.exclude.forEach(function(excludePath) {
         cliArguments = cliArguments + ' --exclude "' + path.join(basePath, excludePath) + '"';
       });
     }
@@ -66,12 +74,12 @@
           fileListWithErrorCountArray.push({
             name: key,
             count: fileListWithErrorCount[key],
-            details: _.filter(rawData, { name: key })
+            details: _.filter(rawData, { name: key }),
           });
         });
         console.info(funkyLogger.color('green', 'Data mapping complete.'));
 
-        fileListWithErrorCountArray.sort(function (a, b) {
+        fileListWithErrorCountArray.sort(function(a, b) {
           return b.count - a.count;
         });
 
@@ -95,15 +103,11 @@
           if (config.breakOnError && data.total > 0) {
             process.exit(1);
           }
-          done()
+          done();
         });
-
       });
-
     });
-
   }
 
   module.exports = generateReport;
-
 })();
