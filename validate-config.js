@@ -34,28 +34,16 @@
       breakOnError: false,
       tsconfig: 'tsconfig.json',
       typeCheck: false,
+      basePath: path.join(__dirname, '..', '..'),
     };
 
     if (config) {
       if (config.tslint && !fs.existsSync(path.join(basePath, config.tslint))) {
-        console.info(
-          funkyLogger.color(
-            'yellow',
-            'info: tslint.json not found, using default config file',
-          ),
-        );
+        console.info(funkyLogger.color('yellow', 'info: tslint.json not found, using default config file'));
         config.tslint = defaultConfig.tslint;
       }
-      if (
-        config.typeCheck &&
-        !fs.existsSync(path.join(basePath, config.tslint))
-      ) {
-        console.info(
-          funkyLogger.color(
-            'yellow',
-            'info: tsconfig.json not found, type checking will be disabled',
-          ),
-        );
+      if (config.typeCheck && !fs.existsSync(path.join(basePath, config.tslint))) {
+        console.info(funkyLogger.color('yellow', 'info: tsconfig.json not found, type checking will be disabled'));
         config.typeCheck = defaultConfig.typeCheck;
       }
       extendedConfig.tslint = config.tslint || defaultConfig.tslint;
@@ -67,10 +55,9 @@
       extendedConfig.breakOnError = config.breakOnError;
       extendedConfig.typeCheck = config.typeCheck;
       extendedConfig.tsconfig = config.tsconfig || defaultConfig.tsconfig;
+      extendedConfig.basePath = config.basePath || defaultConfig.basePath;
       if (config.exclude) {
-        extendedConfig.exclude = Array.isArray(config.exclude)
-          ? config.exclude
-          : extendedConfig.exclude.push(config.exclude);
+        extendedConfig.exclude = Array.isArray(config.exclude) ? config.exclude : extendedConfig.exclude.push(config.exclude);
       }
     } else {
       extendedConfig = defaultConfig;
@@ -83,34 +70,16 @@
     extendedConfig.srcFiles = path.join(basePath, extendedConfig.srcFiles);
     extendedConfig.outDir = path.join(basePath, extendedConfig.outDir);
 
-    extendedConfig.jsonReport = path.join(
-      extendedConfig.outDir,
-      extendedConfig.json,
-    );
-    extendedConfig.finalReport = path.join(
-      extendedConfig.outDir,
-      extendedConfig.html,
-    );
+    extendedConfig.jsonReport = path.join(extendedConfig.outDir, extendedConfig.json);
+    extendedConfig.finalReport = path.join(extendedConfig.outDir, extendedConfig.html);
 
     console.info('Config used for generation of report: ');
-    console.info(
-      funkyLogger.color('cyan', 'Path to tslint.json: '),
-      funkyLogger.color('magenta', extendedConfig.tslint),
-    );
+    console.info(funkyLogger.color('cyan', 'Path to tslint.json: '), funkyLogger.color('magenta', extendedConfig.tslint));
     if (extendedConfig.typeCheck) {
-      console.info(
-        funkyLogger.color('cyan', 'Path to tsconfig.json: '),
-        funkyLogger.color('magenta', extendedConfig.tsconfig),
-      );
+      console.info(funkyLogger.color('cyan', 'Path to tsconfig.json: '), funkyLogger.color('magenta', extendedConfig.tsconfig));
     }
-    console.info(
-      funkyLogger.color('cyan', 'Source files to be linted: '),
-      funkyLogger.color('magenta', extendedConfig.srcFiles),
-    );
-    console.info(
-      funkyLogger.color('cyan', 'Output path for HTML report: '),
-      funkyLogger.color('magenta', extendedConfig.finalReport),
-    );
+    console.info(funkyLogger.color('cyan', 'Source files to be linted: '), funkyLogger.color('magenta', extendedConfig.srcFiles));
+    console.info(funkyLogger.color('cyan', 'Output path for HTML report: '), funkyLogger.color('magenta', extendedConfig.finalReport));
 
     return extendedConfig;
   }

@@ -31,9 +31,12 @@
       ' --force';
 
     if (config.exclude.length > 0) {
-      config.exclude.forEach(function(excludePath) {
-        cliArguments = cliArguments + ' --exclude "' + path.join(basePath, excludePath) + '"';
-      });
+      config.exclude.forEach(
+        function(excludePath) {
+          console.info(basePath);
+          cliArguments = cliArguments + ' --exclude "' + path.join(basePath, excludePath) + '"';
+        }.bind(basePath),
+      );
     }
 
     if (config.typeCheck) {
